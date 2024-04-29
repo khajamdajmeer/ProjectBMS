@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import loginimg from '../Resources/bgloginimg.png';
@@ -6,9 +6,30 @@ import { LogInAPI } from '../APIpoints/SignupAPI';
 import toast,{Toaster} from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
+import UserLogedin from './UserLogedin';
 const LoginPage = () => {
-
     const History = useNavigate();
+    const [userLogendin,setUserLogedin] = useState(false);
+
+    const HandleLogout = ()=>{
+        const cookie = Cookies.get();
+        console.log('called')
+        if(cookie){
+            for(const items in cookie){
+                Cookies.remove(items);
+            }
+            setUserLogedin(false);
+        }else{
+            setUserLogedin(false);
+        }
+    };
+    //useEffect to check if user already loged in or not!!!
+    useEffect(()=>{
+        const userLogedin = Cookies.get('auth-token');
+        if(userLogedin){
+         setUserLogedin(true);
+        }
+    },[]);
     const [showpassword,setShowpassword]=useState(false);
     const showpassChange = ()=>{
         setShowpassword(!showpassword);
@@ -24,7 +45,8 @@ const LoginPage = () => {
         const {success,message}= await response;
         if(success){
             Cookies.set('auth-token',response.Token);
-            toast.success(message)
+            toast.success(message);
+            History('/')
         }else{
             toast.error(message);
         }
@@ -55,6 +77,8 @@ const LoginPage = () => {
         <img style={{display:'flex',height:'100%',width:'auto'}} src={loginimg} alt="" />
     </WrapperRight>
    </CenterBox>
+   {userLogendin && <UserLogedin handlelogout={HandleLogout}/>}
+
   <BottomColor></BottomColor>
   <LeftColor></LeftColor>
   <RightColor></RightColor>
@@ -153,7 +177,7 @@ const BoderDiv = styled.div({
     borderRadius:'5px'
 })
 const Showpassdiv=styled.div({
-    display:'flex',justifyContent:'space-between',width:'80%',maxWidth:'400px',
+    display:'flex',justifyContent:'space-between',width:'100%',maxWidth:'400px',
     '@media (max-width: 768px)':{
         width:'100%'
     }

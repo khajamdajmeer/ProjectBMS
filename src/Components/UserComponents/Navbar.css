@@ -1,0 +1,18 @@
+#navlist{
+    display:flex;
+    flex-direction: column;
+    position: absolute;
+    width: 300px;
+    background-color: white;
+    height: 100%;
+    transform-origin: right;
+    transition: 0.4s linear;
+    right: -360px;
+    top: 0;
+    z-index: 10;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 60px 40px 37px;
+}
+
+#menucheckbox:checked + #navlist{
+ right: 0px;
+}
